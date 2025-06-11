@@ -28,10 +28,12 @@ class App(tk.Tk):
         self.character = Character()
 
         self.title("Warband Character Planer")
-        self.geometry("800x300")
+        self.geometry("800x350")
         self.resizable(True, True)
 
         self.attribute_label = ttk.Label(self, text="", font=("Helvetica", 12))
+        self.proficiencies_label = ttk.Label(self, text="", font=("Helvetica", 12))
+
 
         gender_label = ttk.Label(self, text="Gender")
         father_label = ttk.Label(self, text="Who was your father")
@@ -76,6 +78,7 @@ class App(tk.Tk):
 
 
         self.attribute_label.grid(row=5, column=0, columnspan=1)
+        self.proficiencies_label.grid(row=6, column=0, columnspan=1)
 
         self.display_data()
 
@@ -88,10 +91,17 @@ class App(tk.Tk):
 
 
     def display_data(self, event=None):
-        STR = self.character.attributes.get('STR')
-        AGI = self.character.attributes.get('AGI')
-        INT = self.character.attributes.get('INT')
-        CHA = self.character.attributes.get('CHA')
+        STR = 5
+        AGI = 5
+        INT = 4
+        CHA = 5
+
+        one_handed = 42
+        two_handed = 18
+        polearms = 20
+        archery = 15
+        xbow = 17
+        throw = 19
 
         gender = self.gender.get()
         father = self.father.get()
@@ -110,34 +120,61 @@ class App(tk.Tk):
             if gender == 'Male':
                 INT += 1
                 CHA += 2
+                one_handed += 2
+                two_handed += 15
+                polearms += 21
             elif gender == 'Female':
                 INT += 2
                 CHA += 1
+                one_handed += 14
+                polearms += 7
         elif father == 'Merchant':
             INT += 2
             CHA += 1
+            two_handed += 15
+            polearms += 26
         elif father == 'Warrior':
             STR += 1
             AGI += 1
             CHA += 1
+            one_handed += 2
+            two_handed += 23
+            polearms += 33
+            throw += 15
         elif father == 'Hunter':
             STR += 1
             AGI += 2
+            two_handed += 15
+            polearms += 7
+            archery += 49
         elif father == 'Nomad':
             if gender == 'Male':
                 STR += 1
                 AGI += 1
                 INT += 1
+                one_handed += 2
+                polearms += 7
+                archery += 49
+                throw += 15
             elif gender == 'Female':
                 STR += 1
                 AGI += 1
                 INT += 1
+                one_handed += 5
+                polearms += 7
+                archery += 32
+                throw += 7
         elif father == 'Thief':
             AGI += 3
+            one_handed += 14
+            polearms += 7
+            throw += 31
 
         if childhood == 'Page':
             STR += 1
             CHA += 1
+            one_handed += 8
+            polearms += 3
         elif childhood == 'Apprentice':
             STR += 1
             INT += 1
@@ -147,30 +184,49 @@ class App(tk.Tk):
         elif childhood == 'Urchin':
             AGI += 1
             INT += 1
+            one_handed += 8
+            throw += 7
         elif childhood == 'Steppe Child':
             STR += 1
             AGI += 1
+            archery += 24
 
         if adulthood == 'Squire/Lady in Waiting':
             if gender == 'Male':
                 STR += 1
                 AGI += 1
+                one_handed += 23
+                two_handed += 38
+                polearms += 22
+                archery += 16
+                xbow += 16
+                throw += 14
             elif gender == 'Female':
                 INT += 1
                 CHA += 1
+                one_handed += 8
+                xbow += 24
         elif adulthood == 'Troubadour':
             CHA += 2
+            one_handed += 19
+            xbow += 16
         elif adulthood == 'Student':
             INT += 2
+            one_handed += 15
+            xbow += 32
         elif adulthood == 'Peddler':
             INT += 1
             CHA += 1
+            polearms += 11
         elif adulthood == 'Smith':
             STR += 1
             INT += 1
+            one_handed += 11
         elif adulthood == 'Poacher':
             STR += 1
             AGI += 1
+            polearms += 7
+            archery += 57
 
         if reason == 'Revenge':
             STR += 2
@@ -191,7 +247,17 @@ class App(tk.Tk):
                    f"INT: {INT}\n"
                    f"CHA: {CHA}")
 
+        proficiency_message = (f"Proficiencies:\n"
+                               f"One-handed weapons: {one_handed}\n"
+                               f"Two-handed weapons: {two_handed}\n"
+                               f"Polearms: {polearms}\n"
+                               f"Archery: {archery}\n"
+                               f"Crossbows: {xbow}\n"
+                               f"Throwing: {throw}")
+
         self.attribute_label.config(text=attributes_message)
+        self.proficiencies_label.config(text=proficiency_message)
+
 
 if __name__ == "__main__":
     app = App()
