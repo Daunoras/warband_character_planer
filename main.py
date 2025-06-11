@@ -32,7 +32,9 @@ class App(tk.Tk):
         self.resizable(True, True)
 
         self.attribute_label = ttk.Label(self, text="", font=("Helvetica", 12))
-        self.proficiencies_label = ttk.Label(self, text="", font=("Helvetica", 12))
+        self.proficiencies_label = ttk.Label(self, text="", font=("Helvetica", 10))
+        self.skill_label = ttk.Label(self, text="", font=("Helvetica", 10))
+        self.equipment_label = ttk.Label(self, text="", font=("Helvetica", 10))
 
 
         gender_label = ttk.Label(self, text="Gender")
@@ -79,6 +81,8 @@ class App(tk.Tk):
 
         self.attribute_label.grid(row=5, column=0, columnspan=1)
         self.proficiencies_label.grid(row=6, column=0, columnspan=1)
+        self.skill_label.grid(row=0, column=2, rowspan=7, sticky='n', padx=5, pady=5)
+        self.equipment_label.grid(row=0, column=3, rowspan=7, sticky='n', padx=5, pady=5)
 
         self.display_data()
 
@@ -91,6 +95,14 @@ class App(tk.Tk):
 
 
     def display_data(self, event=None):
+        def add_skills(skills, new_skills):
+            for key in new_skills:
+                if key in skills:
+                    skills[key] += new_skills[key]
+                else:
+                    skills[key] = new_skills[key]
+            return skills
+
         STR = 5
         AGI = 5
         INT = 4
@@ -102,6 +114,8 @@ class App(tk.Tk):
         archery = 15
         xbow = 17
         throw = 19
+
+        skills = {"Riding": 1, "Leadership": 1}
 
         gender = self.gender.get()
         father = self.father.get()
@@ -123,16 +137,19 @@ class App(tk.Tk):
                 one_handed += 2
                 two_handed += 15
                 polearms += 21
+                skills = add_skills(skills, {"Power Strike": 1, "Weapon Master": 1, "Riding": 1, "Tactics": 1, "Leadership": 1})
             elif gender == 'Female':
                 INT += 2
                 CHA += 1
                 one_handed += 14
                 polearms += 7
+                skills = add_skills(skills, {"Riding": 2, "Wound Treatment": 1, "First Aid": 1, "Leadership": 1})
         elif father == 'Merchant':
             INT += 2
             CHA += 1
             two_handed += 15
             polearms += 26
+            skills = add_skills(skills, {"Riding": 1, "Inventory Management": 1, "Leadership": 1, "Trade": 2})
         elif father == 'Warrior':
             STR += 1
             AGI += 1
@@ -141,12 +158,14 @@ class App(tk.Tk):
             two_handed += 23
             polearms += 33
             throw += 15
+            skills = add_skills(skills, {"Ironflesh": 1, "Power Strike": 1, "Weapon Master": 1, "Trainer": 1, "Leadership": 1})
         elif father == 'Hunter':
             STR += 1
             AGI += 2
             two_handed += 15
             polearms += 7
             archery += 49
+            skills = add_skills(skills, {"Power Draw": 1, "Athletics": 1, "Tracking": 1, "Path-finding": 1, "Spotting": 1})
         elif father == 'Nomad':
             if gender == 'Male':
                 STR += 1
@@ -156,6 +175,7 @@ class App(tk.Tk):
                 polearms += 7
                 archery += 49
                 throw += 15
+                skills = add_skills(skills, {"Power Draw": 1, "Riding": 2, "Horse Archery": 1, "Path-finding ": 1})
             elif gender == 'Female':
                 STR += 1
                 AGI += 1
@@ -164,32 +184,39 @@ class App(tk.Tk):
                 polearms += 7
                 archery += 32
                 throw += 7
+                skills = add_skills(skills, {"Riding": 2, "Path-finding": 1, "Wound Treatment": 1, "First Aid": 1})
         elif father == 'Thief':
             AGI += 3
             one_handed += 14
             polearms += 7
             throw += 31
+            skills = add_skills(skills, {"Power Throw": 1, "Athletics": 2, "Looting": 1, "Inventory Management": 1})
 
         if childhood == 'Page':
             STR += 1
             CHA += 1
             one_handed += 8
             polearms += 3
+            skills = add_skills(skills, {"Power Strike": 1, "Persuasion": 1})
         elif childhood == 'Apprentice':
             STR += 1
             INT += 1
+            skills = add_skills(skills, {"Engineer": 1, "Trade": 1})
         elif childhood == 'Assistant':
             INT += 1
             CHA += 1
+            skills = add_skills(skills, {"Inventory Management": 1, "Trade": 1})
         elif childhood == 'Urchin':
             AGI += 1
             INT += 1
             one_handed += 8
             throw += 7
+            skills = add_skills(skills, {"Looting": 1, "Spotting": 1})
         elif childhood == 'Steppe Child':
             STR += 1
             AGI += 1
             archery += 24
+            skills = add_skills(skills, {"Power Throw": 1, "Horse Archery": 1})
 
         if adulthood == 'Squire/Lady in Waiting':
             if gender == 'Male':
@@ -201,45 +228,57 @@ class App(tk.Tk):
                 archery += 16
                 xbow += 16
                 throw += 14
+                skills = add_skills(skills, {"Power Strike": 1, "Weapon Master": 1, "Riding": 1, "Leadership": 1})
             elif gender == 'Female':
                 INT += 1
                 CHA += 1
                 one_handed += 8
                 xbow += 24
+                skills = add_skills(skills, {"Riding": 1, "Wound Treatment": 1, "Persuasion": 2})
         elif adulthood == 'Troubadour':
             CHA += 2
             one_handed += 19
             xbow += 16
+            skills = add_skills(skills, {"Weapon Master": 1, "Path-finding": 1, "Persuasion": 1, "Leadership": 1})
         elif adulthood == 'Student':
             INT += 2
             one_handed += 15
             xbow += 32
+            skills = add_skills(skills, {"Weapon Master": 1, "Wound Treatment": 1, "Surgery": 1, "Persuasion": 1})
         elif adulthood == 'Peddler':
             INT += 1
             CHA += 1
             polearms += 11
+            skills = add_skills(skills, {"Riding": 1, "Path-finding": 1, "Inventory Management": 1, "Trade": 1})
         elif adulthood == 'Smith':
             STR += 1
             INT += 1
             one_handed += 11
+            skills = add_skills(skills, {"Weapon Master": 1, "Tactics": 1, "Engineer": 1, "Trade": 1})
         elif adulthood == 'Poacher':
             STR += 1
             AGI += 1
             polearms += 7
             archery += 57
+            skills = add_skills(skills, {"Power Draw": 1, "Athletics": 1, "Tracking": 1, "Spotting": 1})
 
         if reason == 'Revenge':
             STR += 2
+            skills = add_skills(skills, {"Power Strike": 1})
         elif reason == 'Loss':
             CHA += 2
+            skills = add_skills(skills, {"Ironflesh": 1})
         elif reason == 'Wanderlust':
             AGI += 2
+            skills = add_skills(skills, {"Path-finding": 1})
         elif reason == 'Forced out':
             STR += 1
             INT += 1
+            skills = add_skills(skills, {"Weapon Master": 1})
         elif reason == 'Money':
             AGI += 1
             INT += 1
+            skills = add_skills(skills, {"Looting": 1})
 
         attributes_message = (f"Attributes:\n"
                    f"STR: {STR}\n"
@@ -255,8 +294,17 @@ class App(tk.Tk):
                                f"Crossbows: {xbow}\n"
                                f"Throwing: {throw}")
 
+        skill_list = []
+        for key in skills:
+            skill_list.append(f"{key}: {skills[key]}")
+        skills_message = ("Skills:\n" + "\n".join(skill_list))
+
+        equipment_message = ""
+
         self.attribute_label.config(text=attributes_message)
         self.proficiencies_label.config(text=proficiency_message)
+        self.skill_label.config(text=skills_message)
+        self.equipment_label.config(text=equipment_message)
 
 
 if __name__ == "__main__":
