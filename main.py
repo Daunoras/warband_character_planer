@@ -74,8 +74,8 @@ class App(tk.Tk):
     def gender_selected(self, event=None):
         self.father_selection.config(state="readonly")
         self.adulthood_selection.config(state="readonly")
-        self.father_dissabled_label.config(text="")
-        self.adulthood_dissabled_label.config(text="")
+        self.father_dissabled_label.destroy()
+        self.adulthood_dissabled_label.destroy()
         self.display_data()
 
 
