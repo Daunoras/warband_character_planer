@@ -7,28 +7,13 @@ selection_data = {'Father': ['Noble', 'Merchant', 'Warrior', 'Hunter', 'Nomad', 
                   'Reason for adventuring': ['Revenge', 'Loss', 'Wanderlust', 'Forced out', 'Money']
                   }
 
-class Character:
-    def __init__(self):
-        self.attributes = {'STR': 5, 'AGI': 5, 'INT': 4, 'CHA': 5}
-        self.proficiencies = {'One-handed weapons': 42,
-                                             'Two-handed weapons': 18,
-                                             'Polearms': 20,
-                                             'Archery': 15,
-                                             'Crossbows': 17,
-                                             'Throwing': 19}
-        self.skills = {'Riding': 1, 'Leadership': 1}
-        self.equipment = None
-
-
-
 
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.character = Character()
 
         self.title("Warband Character Planer")
-        self.geometry("800x350")
+        self.geometry("700x300")
         self.resizable(True, True)
 
         self.attribute_label = ttk.Label(self, text="", font=("Helvetica", 12))
@@ -80,9 +65,9 @@ class App(tk.Tk):
 
 
         self.attribute_label.grid(row=5, column=0, columnspan=1)
-        self.proficiencies_label.grid(row=6, column=0, columnspan=1)
+        self.proficiencies_label.grid(row=5, column=1, columnspan=1)
         self.skill_label.grid(row=0, column=2, rowspan=7, sticky='n', padx=5, pady=5)
-        self.equipment_label.grid(row=0, column=3, rowspan=7, sticky='n', padx=5, pady=5)
+        self.equipment_label.grid(row=0, column=3, rowspan=8, sticky='n', padx=5, pady=5)
 
         self.display_data()
 
@@ -103,6 +88,14 @@ class App(tk.Tk):
                     skills[key] = new_skills[key]
             return skills
 
+        def add_equipment(equipment, stuff, denars, renown, honor):
+            equipment['stuff'] += stuff
+            equipment['Denars'] += denars
+            equipment['Renown'] += renown
+            equipment['Honor'] += honor
+            return equipment
+
+
         STR = 5
         AGI = 5
         INT = 4
@@ -116,6 +109,7 @@ class App(tk.Tk):
         throw = 19
 
         skills = {"Riding": 1, "Leadership": 1}
+        equipment = {"stuff": [], "Denars": 0, "Renown": 0, "Honor": 0, }
 
         gender = self.gender.get()
         father = self.father.get()
@@ -138,18 +132,21 @@ class App(tk.Tk):
                 two_handed += 15
                 polearms += 21
                 skills = add_skills(skills, {"Power Strike": 1, "Weapon Master": 1, "Riding": 1, "Tactics": 1, "Leadership": 1})
+                equipment = add_equipment(equipment, ['Battered old round shield', 'Banner'], 100, 100, 3)
             elif gender == 'Female':
                 INT += 2
                 CHA += 1
                 one_handed += 14
                 polearms += 7
                 skills = add_skills(skills, {"Riding": 2, "Wound Treatment": 1, "First Aid": 1, "Leadership": 1})
+                equipment = add_equipment(equipment, ['Battered old round shield', 'Banner'], 100, 50, 0)
         elif father == 'Merchant':
             INT += 2
             CHA += 1
             two_handed += 15
             polearms += 26
             skills = add_skills(skills, {"Riding": 1, "Inventory Management": 1, "Leadership": 1, "Trade": 2})
+            equipment = add_equipment(equipment, [], 250, 20, 0)
         elif father == 'Warrior':
             STR += 1
             AGI += 1
@@ -159,6 +156,7 @@ class App(tk.Tk):
             polearms += 33
             throw += 15
             skills = add_skills(skills, {"Ironflesh": 1, "Power Strike": 1, "Weapon Master": 1, "Trainer": 1, "Leadership": 1})
+            equipment = add_equipment(equipment, ['Battered plain kite shield'], 50, 10, 0)
         elif father == 'Hunter':
             STR += 1
             AGI += 2
@@ -166,6 +164,7 @@ class App(tk.Tk):
             polearms += 7
             archery += 49
             skills = add_skills(skills, {"Power Draw": 1, "Athletics": 1, "Tracking": 1, "Path-finding": 1, "Spotting": 1})
+            equipment = add_equipment(equipment, [], 30, 0, 0)
         elif father == 'Nomad':
             if gender == 'Male':
                 STR += 1
@@ -176,6 +175,7 @@ class App(tk.Tk):
                 archery += 49
                 throw += 15
                 skills = add_skills(skills, {"Power Draw": 1, "Riding": 2, "Horse Archery": 1, "Path-finding ": 1})
+                equipment = add_equipment(equipment, ['Battered plain cavalry shield'], 15, 10, 0)
             elif gender == 'Female':
                 STR += 1
                 AGI += 1
@@ -185,12 +185,14 @@ class App(tk.Tk):
                 archery += 32
                 throw += 7
                 skills = add_skills(skills, {"Riding": 2, "Path-finding": 1, "Wound Treatment": 1, "First Aid": 1})
+                equipment = add_equipment(equipment, ['Battered plain cavalry shield'], 20, 0, 0)
         elif father == 'Thief':
             AGI += 3
             one_handed += 14
             polearms += 7
             throw += 31
             skills = add_skills(skills, {"Power Throw": 1, "Athletics": 2, "Looting": 1, "Inventory Management": 1})
+            equipment = add_equipment(equipment, ['Throwing knives'], 25, 0, 0)
 
         if childhood == 'Page':
             STR += 1
@@ -217,6 +219,7 @@ class App(tk.Tk):
             AGI += 1
             archery += 24
             skills = add_skills(skills, {"Power Throw": 1, "Horse Archery": 1})
+            equipment = add_equipment(equipment, [], 0, 15, 0)
 
         if adulthood == 'Squire/Lady in Waiting':
             if gender == 'Male':
@@ -229,38 +232,97 @@ class App(tk.Tk):
                 xbow += 16
                 throw += 14
                 skills = add_skills(skills, {"Power Strike": 1, "Weapon Master": 1, "Riding": 1, "Leadership": 1})
+                equipment = add_equipment(equipment, ['Ragged leather jerkin',
+                                                      'Tattered leather boots',
+                                                      'Swaybacked saddle horse',
+                                                      'Rusty sword',
+                                                      'Hunting crossbow',
+                                                      'Bolts',
+                                                      'Smoked fish',
+                                                      ], 20, 0, 0)
             elif gender == 'Female':
                 INT += 1
                 CHA += 1
                 one_handed += 8
                 xbow += 24
                 skills = add_skills(skills, {"Riding": 1, "Wound Treatment": 1, "Persuasion": 2})
+                equipment = add_equipment(equipment, ['Sturdy woollen hood',
+                                                      'Sturdy woollen dress',
+                                                      'Spirited courser',
+                                                      'Dagger',
+                                                      'Hunting crossbow',
+                                                      'Bolts',
+                                                      'Smoked fish'
+                                                      ], 100, 0, 0)
         elif adulthood == 'Troubadour':
             CHA += 2
             one_handed += 19
             xbow += 16
             skills = add_skills(skills, {"Weapon Master": 1, "Path-finding": 1, "Persuasion": 1, "Leadership": 1})
+            equipment = add_equipment(equipment, [	'Sturdy tabard',
+                                                      'Ragged leather boots',
+                                                      'Swaybacked saddle horse',
+                                                      'Rusty sword',
+                                                      'Hunting crossbow',
+                                                      'Smoked fish'], 80, 0, 0)
         elif adulthood == 'Student':
             INT += 2
             one_handed += 15
             xbow += 32
             skills = add_skills(skills, {"Weapon Master": 1, "Wound Treatment": 1, "Surgery": 1, "Persuasion": 1})
+            equipment = add_equipment(equipment, ['Sturdy linen tunic',
+                                                  'Woollen hose',
+                                                  'Swaybacked saddle horse',
+                                                  'Rusty sword',
+                                                  'Hunting crossbow',
+                                                  'Bolts',
+                                                  'Smoked fish',
+                                                  'Book (random)'], 80, 0, 0)
         elif adulthood == 'Peddler':
             INT += 1
             CHA += 1
             polearms += 11
             skills = add_skills(skills, {"Riding": 1, "Path-finding": 1, "Inventory Management": 1, "Trade": 1})
+            equipment = add_equipment(equipment, [	'Fur hat',
+                                                      'Leather jacket',
+                                                      'Ragged leather boots',
+                                                      'Leather gloves',
+                                                      'Saddle horse',
+                                                      'Staff',
+                                                      'Hunting crossbow',
+                                                      'Bolts',
+                                                      'Smoked fish',
+                                                      'Linen',
+                                                      'Pottery',
+                                                      '2x Wool',
+                                                      'Sumpter horse'], 90, 0, 0)
         elif adulthood == 'Smith':
             STR += 1
             INT += 1
             one_handed += 11
             skills = add_skills(skills, {"Weapon Master": 1, "Tactics": 1, "Engineer": 1, "Trade": 1})
+            equipment = add_equipment(equipment, ['Coarse tunic',
+                                                  'Ragged leather boots',
+                                                  'Saddle horse',
+                                                  'Balanced sword',
+                                                  'Hunting crossbow',
+                                                  'Bolts',
+                                                  'Smoked fish',
+                                                  'Tools'], 100, 0, 0)
         elif adulthood == 'Poacher':
             STR += 1
             AGI += 1
             polearms += 7
             archery += 57
             skills = add_skills(skills, {"Power Draw": 1, "Athletics": 1, "Tracking": 1, "Spotting": 1})
+            equipment = add_equipment(equipment, ['Rawhide coat',
+                                                  'Hide boots',
+                                                  'Heavy Sumpter horse',
+                                                  'Chipped axe',
+                                                  'Hunting bow',
+                                                  'Barbed arrows',
+                                                  '2x Dried meat',
+                                                  '2x Furs'], 10, 0, 0)
 
         if reason == 'Revenge':
             STR += 2
@@ -280,13 +342,13 @@ class App(tk.Tk):
             INT += 1
             skills = add_skills(skills, {"Looting": 1})
 
-        attributes_message = (f"Attributes:\n"
+        attributes_message = (f"ATTRIBUTES:\n"
                    f"STR: {STR}\n"
                    f"AGI: {AGI}\n"
                    f"INT: {INT}\n"
                    f"CHA: {CHA}")
 
-        proficiency_message = (f"Proficiencies:\n"
+        proficiency_message = (f"PROFICIENCIES:\n"
                                f"One-handed weapons: {one_handed}\n"
                                f"Two-handed weapons: {two_handed}\n"
                                f"Polearms: {polearms}\n"
@@ -297,9 +359,10 @@ class App(tk.Tk):
         skill_list = []
         for key in skills:
             skill_list.append(f"{key}: {skills[key]}")
-        skills_message = ("Skills:\n" + "\n".join(skill_list))
+        skills_message = ("SKILLS:\n" + "\n".join(skill_list))
 
-        equipment_message = ""
+        stuff = "\n".join(equipment["stuff"]) + "\n"
+        equipment_message = "EQUIPMENT:\n" + stuff + f"Denars: {equipment['Denars']}\nRenown: {equipment['Renown']}\nHonor: {equipment['Honor']}"
 
         self.attribute_label.config(text=attributes_message)
         self.proficiencies_label.config(text=proficiency_message)
